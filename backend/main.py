@@ -9,6 +9,7 @@ from config import settings
 from auth import google_auth
 from services.gmail import gmail_service
 from services.calendar import calendar_service
+from services.agent import scheduling_agent
 
 app = FastAPI(
     title="Scheduling Agent",
@@ -332,6 +333,30 @@ async def get_free_slots(
         end_hour=end_hour,
     )
     return {"free_slots": slots, "count": len(slots)}
+
+
+# ============== Agent Chat Routes ==============
+
+@app.post("/api/chat")
+async def chat(request: Request):
+    """Send a message to the scheduling agent."""
+    require_auth()
+
+    data = await request.json()
+    message = data.get("message")
+
+    if not message:
+        raise HTTPException(status_code=400, detail="Message is required")
+
+    response = scheduling_agent.send_message(message)
+    return {"response": response}
+
+
+@app.post("/api/chat/reset")
+async def reset_chat():
+    """Reset the chat session."""
+    scheduling_agent.reset_chat()
+    return {"message": "Chat session reset"}
 
 
 if __name__ == "__main__":
