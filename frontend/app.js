@@ -6,11 +6,13 @@ const loginScreen = document.getElementById('login-screen');
 const chatScreen = document.getElementById('chat-screen');
 const loginBtn = document.getElementById('login-btn');
 const logoutBtn = document.getElementById('logout-btn');
-const resetBtn = document.getElementById('reset-btn');
+const newChatBtn = document.getElementById('new-chat-btn');
 const chatForm = document.getElementById('chat-form');
 const messageInput = document.getElementById('message-input');
 const messagesContainer = document.getElementById('messages');
 const sendBtn = document.getElementById('send-btn');
+const sidebar = document.getElementById('sidebar');
+const menuToggle = document.getElementById('menu-toggle');
 
 // State
 let isLoading = false;
@@ -19,6 +21,7 @@ let isLoading = false;
 async function init() {
     await checkAuthStatus();
     setupEventListeners();
+    setupTextareaAutoResize();
 }
 
 // Check authentication status
@@ -51,6 +54,17 @@ function showChatScreen() {
     messageInput.focus();
 }
 
+// Setup textarea auto-resize
+function setupTextareaAutoResize() {
+    messageInput.addEventListener('input', () => {
+        messageInput.style.height = 'auto';
+        messageInput.style.height = Math.min(messageInput.scrollHeight, 200) + 'px';
+
+        // Enable/disable send button based on input
+        sendBtn.disabled = !messageInput.value.trim();
+    });
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // Login button
@@ -59,27 +73,72 @@ function setupEventListeners() {
     // Logout button
     logoutBtn.addEventListener('click', handleLogout);
 
-    // Reset chat button
-    resetBtn.addEventListener('click', handleResetChat);
+    // New chat button
+    newChatBtn.addEventListener('click', handleResetChat);
 
     // Chat form submit
     chatForm.addEventListener('submit', handleSendMessage);
 
-    // Suggestion buttons
-    document.querySelectorAll('.suggestion').forEach(btn => {
+    // Handle Enter key (submit) vs Shift+Enter (new line)
+    messageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (messageInput.value.trim() && !isLoading) {
+                handleSendMessage(e);
+            }
+        }
+    });
+
+    // Suggestion cards
+    document.querySelectorAll('.suggestion-card').forEach(btn => {
         btn.addEventListener('click', () => {
             const message = btn.dataset.message;
             messageInput.value = message;
+            sendBtn.disabled = false;
             handleSendMessage(new Event('submit'));
         });
     });
+
+    // Sidebar items
+    document.querySelectorAll('.sidebar-item[data-message]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const message = btn.dataset.message;
+            messageInput.value = message;
+            sendBtn.disabled = false;
+            handleSendMessage(new Event('submit'));
+            closeSidebar();
+        });
+    });
+
+    // Mobile menu toggle
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleSidebar);
+    }
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 &&
+            sidebar.classList.contains('open') &&
+            !sidebar.contains(e.target) &&
+            e.target !== menuToggle) {
+            closeSidebar();
+        }
+    });
+}
+
+function toggleSidebar() {
+    sidebar.classList.toggle('open');
+}
+
+function closeSidebar() {
+    sidebar.classList.remove('open');
 }
 
 // Handle login
 async function handleLogin() {
     try {
         loginBtn.disabled = true;
-        loginBtn.innerHTML = 'Redirecting...';
+        loginBtn.innerHTML = '<span>Connecting...</span>';
 
         const response = await fetch(`${API_BASE}/auth/login`);
         const data = await response.json();
@@ -94,13 +153,13 @@ async function handleLogin() {
         alert('Failed to initiate login. Please try again.');
         loginBtn.disabled = false;
         loginBtn.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            <svg viewBox="0 0 24 24" width="20" height="20">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Sign in with Google
+            <span>Continue with Google</span>
         `;
     }
 }
@@ -121,7 +180,7 @@ async function handleResetChat() {
     try {
         await fetch(`${API_BASE}/api/chat/reset`, { method: 'POST' });
         clearMessages();
-        showWelcomeMessage();
+        showWelcomeState();
     } catch (error) {
         console.error('Reset chat error:', error);
     }
@@ -132,26 +191,74 @@ function clearMessages() {
     messagesContainer.innerHTML = '';
 }
 
-// Show welcome message
-function showWelcomeMessage() {
+// Show welcome state
+function showWelcomeState() {
     messagesContainer.innerHTML = `
-        <div class="welcome-message">
-            <h2>Welcome to Scheduling Agent</h2>
-            <p>I can help you manage your emails and calendar. Try asking:</p>
-            <div class="suggestions">
-                <button class="suggestion" data-message="Do I have any unread emails?">Do I have any unread emails?</button>
-                <button class="suggestion" data-message="What's on my calendar today?">What's on my calendar today?</button>
-                <button class="suggestion" data-message="What events do I have this week?">What events do I have this week?</button>
-                <button class="suggestion" data-message="Find free slots for a 30-minute meeting">Find free slots for a meeting</button>
+        <div class="welcome-state">
+            <div class="welcome-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+                    <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>
+                </svg>
+            </div>
+            <h2>How can I help you today?</h2>
+            <p>I can manage your emails, check your calendar, schedule meetings, and more.</p>
+
+            <div class="welcome-suggestions">
+                <button class="suggestion-card" data-message="Summarize my important emails from today">
+                    <div class="suggestion-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="suggestion-text">
+                        <span class="suggestion-title">Email Summary</span>
+                        <span class="suggestion-desc">Get important emails from today</span>
+                    </div>
+                </button>
+                <button class="suggestion-card" data-message="What meetings do I have coming up?">
+                    <div class="suggestion-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <div class="suggestion-text">
+                        <span class="suggestion-title">Upcoming Meetings</span>
+                        <span class="suggestion-desc">View your scheduled meetings</span>
+                    </div>
+                </button>
+                <button class="suggestion-card" data-message="Schedule a meeting for tomorrow at 2pm titled 'Team Sync'">
+                    <div class="suggestion-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="suggestion-text">
+                        <span class="suggestion-title">Create Event</span>
+                        <span class="suggestion-desc">Schedule a new meeting</span>
+                    </div>
+                </button>
+                <button class="suggestion-card" data-message="When am I free this week for a 1-hour meeting?">
+                    <div class="suggestion-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <div class="suggestion-text">
+                        <span class="suggestion-title">Check Availability</span>
+                        <span class="suggestion-desc">Find free time slots</span>
+                    </div>
+                </button>
             </div>
         </div>
     `;
 
     // Re-attach suggestion listeners
-    document.querySelectorAll('.suggestion').forEach(btn => {
+    document.querySelectorAll('.suggestion-card').forEach(btn => {
         btn.addEventListener('click', () => {
             const message = btn.dataset.message;
             messageInput.value = message;
+            sendBtn.disabled = false;
             handleSendMessage(new Event('submit'));
         });
     });
@@ -164,19 +271,20 @@ async function handleSendMessage(e) {
     const message = messageInput.value.trim();
     if (!message || isLoading) return;
 
-    // Remove welcome message if present
-    const welcomeMessage = messagesContainer.querySelector('.welcome-message');
-    if (welcomeMessage) {
-        welcomeMessage.remove();
+    // Remove welcome state if present
+    const welcomeState = messagesContainer.querySelector('.welcome-state');
+    if (welcomeState) {
+        welcomeState.remove();
     }
 
     // Add user message
     addMessage(message, 'user');
     messageInput.value = '';
+    messageInput.style.height = 'auto';
+    sendBtn.disabled = true;
 
     // Show typing indicator
     isLoading = true;
-    sendBtn.disabled = true;
     const typingIndicator = addTypingIndicator();
 
     try {
@@ -204,7 +312,6 @@ async function handleSendMessage(e) {
         addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
     } finally {
         isLoading = false;
-        sendBtn.disabled = false;
         messageInput.focus();
     }
 }
@@ -214,13 +321,18 @@ function addMessage(content, role) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${role}`;
 
-    const avatarIcon = role === 'user'
-        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
-        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+    const userIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+    </svg>`;
+
+    const assistantIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+    </svg>`;
 
     messageDiv.innerHTML = `
-        <div class="message-avatar">${avatarIcon}</div>
-        <div class="message-content">${escapeHtml(content)}</div>
+        <div class="message-avatar">${role === 'user' ? userIcon : assistantIcon}</div>
+        <div class="message-content"><p>${escapeHtml(content)}</p></div>
     `;
 
     messagesContainer.appendChild(messageDiv);
@@ -233,11 +345,8 @@ function addTypingIndicator() {
     messageDiv.className = 'message assistant';
     messageDiv.innerHTML = `
         <div class="message-avatar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
             </svg>
         </div>
         <div class="message-content">
@@ -255,8 +364,10 @@ function addTypingIndicator() {
 
 // Scroll to bottom of messages
 function scrollToBottom() {
-    const chatMain = document.querySelector('.chat-main');
-    chatMain.scrollTop = chatMain.scrollHeight;
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 }
 
 // Escape HTML to prevent XSS

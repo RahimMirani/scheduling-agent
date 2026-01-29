@@ -4,97 +4,224 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scheduling Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div id="app">
         <!-- Login Screen -->
         <div id="login-screen" class="screen">
-            <div class="login-container">
-                <div class="logo">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
+            <div class="login-wrapper">
+                <div class="login-card">
+                    <div class="login-header">
+                        <div class="login-logo">
+                            <div class="logo-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+                                    <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h1>Scheduling Agent</h1>
+                        <p>Your AI-powered assistant for Gmail & Google Calendar</p>
+                    </div>
+
+                    <div class="login-features">
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <span>Manage Emails</span>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <span>Schedule Events</span>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                </svg>
+                            </div>
+                            <span>Smart Suggestions</span>
+                        </div>
+                    </div>
+
+                    <button id="login-btn" class="login-button">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+
+                    <p class="login-footer">
+                        Securely connect your Google account to get started
+                    </p>
                 </div>
-                <h1>Scheduling Agent</h1>
-                <p>AI-powered assistant for Gmail and Google Calendar</p>
-                <button id="login-btn" class="btn btn-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    Sign in with Google
-                </button>
             </div>
         </div>
 
         <!-- Chat Screen -->
         <div id="chat-screen" class="screen hidden">
-            <header class="chat-header">
-                <div class="header-left">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <h1>Scheduling Agent</h1>
-                </div>
-                <div class="header-right">
-                    <button id="reset-btn" class="btn btn-secondary" title="New conversation">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                            <path d="M3 3v5h5"/>
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <button id="new-chat-btn" class="new-chat-button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12h14"/>
                         </svg>
-                        New Chat
-                    </button>
-                    <button id="logout-btn" class="btn btn-secondary" title="Sign out">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
-                        Sign Out
+                        <span>New Chat</span>
                     </button>
                 </div>
-            </header>
 
+                <div class="sidebar-content">
+                    <div class="sidebar-section">
+                        <div class="section-title">Quick Actions</div>
+                        <button class="sidebar-item" data-message="Do I have any unread emails?">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <span>Check unread emails</span>
+                        </button>
+                        <button class="sidebar-item" data-message="What's on my calendar today?">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+                            </svg>
+                            <span>Today's schedule</span>
+                        </button>
+                        <button class="sidebar-item" data-message="What events do I have this week?">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            <span>This week's events</span>
+                        </button>
+                        <button class="sidebar-item" data-message="Find free slots for a 30-minute meeting this week">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Find free time</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <button id="logout-btn" class="sidebar-item logout">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Chat Area -->
             <main class="chat-main">
-                <div id="messages" class="messages">
-                    <div class="welcome-message">
-                        <h2>Welcome to Scheduling Agent</h2>
-                        <p>I can help you manage your emails and calendar. Try asking:</p>
-                        <div class="suggestions">
-                            <button class="suggestion" data-message="Do I have any unread emails?">Do I have any unread emails?</button>
-                            <button class="suggestion" data-message="What's on my calendar today?">What's on my calendar today?</button>
-                            <button class="suggestion" data-message="What events do I have this week?">What events do I have this week?</button>
-                            <button class="suggestion" data-message="Find free slots for a 30-minute meeting">Find free slots for a meeting</button>
+                <!-- Mobile Header -->
+                <div class="mobile-header">
+                    <button id="menu-toggle" class="menu-toggle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                    <span class="mobile-title">Scheduling Agent</span>
+                </div>
+
+                <div class="chat-container">
+                    <div id="messages" class="messages">
+                        <!-- Welcome state -->
+                        <div class="welcome-state">
+                            <div class="welcome-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+                                    <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>
+                                </svg>
+                            </div>
+                            <h2>How can I help you today?</h2>
+                            <p>I can manage your emails, check your calendar, schedule meetings, and more.</p>
+
+                            <div class="welcome-suggestions">
+                                <button class="suggestion-card" data-message="Summarize my important emails from today">
+                                    <div class="suggestion-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <span class="suggestion-title">Email Summary</span>
+                                        <span class="suggestion-desc">Get important emails from today</span>
+                                    </div>
+                                </button>
+                                <button class="suggestion-card" data-message="What meetings do I have coming up?">
+                                    <div class="suggestion-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <span class="suggestion-title">Upcoming Meetings</span>
+                                        <span class="suggestion-desc">View your scheduled meetings</span>
+                                    </div>
+                                </button>
+                                <button class="suggestion-card" data-message="Schedule a meeting for tomorrow at 2pm titled 'Team Sync'">
+                                    <div class="suggestion-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <span class="suggestion-title">Create Event</span>
+                                        <span class="suggestion-desc">Schedule a new meeting</span>
+                                    </div>
+                                </button>
+                                <button class="suggestion-card" data-message="When am I free this week for a 1-hour meeting?">
+                                    <div class="suggestion-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                        </svg>
+                                    </div>
+                                    <div class="suggestion-text">
+                                        <span class="suggestion-title">Check Availability</span>
+                                        <span class="suggestion-desc">Find free time slots</span>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </main>
 
-            <footer class="chat-footer">
-                <form id="chat-form" class="chat-input-container">
-                    <input
-                        type="text"
-                        id="message-input"
-                        placeholder="Ask about your emails or calendar..."
-                        autocomplete="off"
-                    >
-                    <button type="submit" id="send-btn" class="btn btn-primary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="22" y1="2" x2="11" y2="13"/>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                        </svg>
-                    </button>
-                </form>
-            </footer>
+                <!-- Input Area -->
+                <div class="input-area">
+                    <div class="input-container">
+                        <form id="chat-form" class="chat-form">
+                            <div class="input-wrapper">
+                                <textarea
+                                    id="message-input"
+                                    placeholder="Message Scheduling Agent..."
+                                    rows="1"
+                                    autocomplete="off"
+                                ></textarea>
+                                <button type="submit" id="send-btn" class="send-button" disabled>
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        <p class="input-hint">Scheduling Agent can make mistakes. Verify important information.</p>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
