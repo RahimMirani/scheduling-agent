@@ -8,6 +8,7 @@ import os
 from config import settings
 from auth import google_auth
 from services.gmail import gmail_service
+from services.calendar import calendar_service
 
 app = FastAPI(
     title="Scheduling Agent",
@@ -176,6 +177,161 @@ async def get_labels():
     require_auth()
     labels = gmail_service.get_labels()
     return {"labels": labels}
+
+
+# ============== Calendar Routes ==============
+
+@app.get("/api/calendar/events")
+async def get_events(max_results: int = 10):
+    """Get upcoming calendar events."""
+    require_auth()
+    events = calendar_service.list_events(max_results=max_results)
+    return {"events": events, "count": len(events)}
+
+
+@app.get("/api/calendar/events/today")
+async def get_today_events():
+    """Get today's calendar events."""
+    require_auth()
+    events = calendar_service.get_today_events()
+    return {"events": events, "count": len(events)}
+
+
+@app.get("/api/calendar/events/week")
+async def get_week_events():
+    """Get this week's calendar events."""
+    require_auth()
+    events = calendar_service.get_week_events()
+    return {"events": events, "count": len(events)}
+
+
+@app.get("/api/calendar/events/{event_id}")
+async def get_event(event_id: str):
+    """Get a specific calendar event."""
+    require_auth()
+    event = calendar_service.get_event(event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return event
+
+
+@app.post("/api/calendar/events")
+async def create_event(request: Request):
+    """Create a new calendar event."""
+    require_auth()
+    data = await request.json()
+
+    from datetime import datetime
+
+    summary = data.get("summary")
+    start_time_str = data.get("start_time")
+    end_time_str = data.get("end_time")
+    description = data.get("description", "")
+    location = data.get("location", "")
+    attendees = data.get("attendees", [])
+    all_day = data.get("all_day", False)
+
+    if not summary or not start_time_str:
+        raise HTTPException(status_code=400, detail="Missing required fields: summary, start_time")
+
+    try:
+        start_time = datetime.fromisoformat(start_time_str.replace("Z", "+00:00"))
+        end_time = datetime.fromisoformat(end_time_str.replace("Z", "+00:00")) if end_time_str else None
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid datetime format. Use ISO format.")
+
+    event = calendar_service.create_event(
+        summary=summary,
+        start_time=start_time,
+        end_time=end_time,
+        description=description,
+        location=location,
+        attendees=attendees,
+        all_day=all_day,
+    )
+
+    if not event:
+        raise HTTPException(status_code=500, detail="Failed to create event")
+    return event
+
+
+@app.put("/api/calendar/events/{event_id}")
+async def update_event(event_id: str, request: Request):
+    """Update an existing calendar event."""
+    require_auth()
+    data = await request.json()
+
+    from datetime import datetime
+
+    summary = data.get("summary")
+    start_time_str = data.get("start_time")
+    end_time_str = data.get("end_time")
+    description = data.get("description")
+    location = data.get("location")
+
+    start_time = None
+    end_time = None
+
+    if start_time_str:
+        try:
+            start_time = datetime.fromisoformat(start_time_str.replace("Z", "+00:00"))
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid start_time format")
+
+    if end_time_str:
+        try:
+            end_time = datetime.fromisoformat(end_time_str.replace("Z", "+00:00"))
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid end_time format")
+
+    event = calendar_service.update_event(
+        event_id=event_id,
+        summary=summary,
+        start_time=start_time,
+        end_time=end_time,
+        description=description,
+        location=location,
+    )
+
+    if not event:
+        raise HTTPException(status_code=500, detail="Failed to update event")
+    return event
+
+
+@app.delete("/api/calendar/events/{event_id}")
+async def delete_event(event_id: str):
+    """Delete a calendar event."""
+    require_auth()
+    success = calendar_service.delete_event(event_id)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to delete event")
+    return {"message": "Event deleted successfully"}
+
+
+@app.get("/api/calendar/calendars")
+async def get_calendars():
+    """Get list of all calendars."""
+    require_auth()
+    calendars = calendar_service.get_calendars()
+    return {"calendars": calendars}
+
+
+@app.get("/api/calendar/free-slots")
+async def get_free_slots(
+    duration_minutes: int = 60,
+    days_ahead: int = 7,
+    start_hour: int = 9,
+    end_hour: int = 17,
+):
+    """Find free time slots in the calendar."""
+    require_auth()
+    slots = calendar_service.find_free_slots(
+        duration_minutes=duration_minutes,
+        days_ahead=days_ahead,
+        start_hour=start_hour,
+        end_hour=end_hour,
+    )
+    return {"free_slots": slots, "count": len(slots)}
 
 
 if __name__ == "__main__":
