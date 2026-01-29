@@ -26,6 +26,55 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files for frontend
+frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
+if os.path.exists(frontend_dir):
+    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+
+# Explicit routes for CSS and JS to ensure proper content types
+@app.get("/static/styles.css")
+async def serve_css():
+    """Serve CSS file with proper headers."""
+    css_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "styles.css")
+    if os.path.exists(css_path):
+        return FileResponse(
+            css_path,
+            media_type="text/css",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
+    raise HTTPException(status_code=404, detail="CSS file not found")
+
+@app.get("/static/app.js")
+async def serve_js():
+    """Serve JS file with proper headers."""
+    js_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "app.js")
+    if os.path.exists(js_path):
+        return FileResponse(
+            js_path,
+            media_type="application/javascript",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
+    raise HTTPException(status_code=404, detail="JS file not found")
+
+# Also serve at root level for relative path support (when opening index.html directly)
+@app.get("/styles.css")
+async def serve_css_root():
+    """Serve CSS file at root level."""
+    return await serve_css()
+
+@app.get("/app.js")
+async def serve_js_root():
+    """Serve JS file at root level."""
+    return await serve_js()
+
 # Add no-cache headers for static files in development
 @app.middleware("http")
 async def add_no_cache_headers(request: Request, call_next):
@@ -35,11 +84,6 @@ async def add_no_cache_headers(request: Request, call_next):
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
     return response
-
-# Mount static files for frontend
-frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
-if os.path.exists(frontend_dir):
-    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 
 
 @app.get("/")
