@@ -115,23 +115,38 @@ function setupEventListeners() {
         menuToggle.addEventListener('click', toggleSidebar);
     }
 
+    // Sidebar overlay
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', (e) => {
         if (window.innerWidth <= 768 &&
             sidebar.classList.contains('open') &&
             !sidebar.contains(e.target) &&
-            e.target !== menuToggle) {
+            e.target !== menuToggle &&
+            e.target !== sidebarOverlay) {
             closeSidebar();
         }
     });
 }
 
 function toggleSidebar() {
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
     sidebar.classList.toggle('open');
+    if (sidebarOverlay) {
+        sidebarOverlay.classList.toggle('open');
+    }
 }
 
 function closeSidebar() {
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
     sidebar.classList.remove('open');
+    if (sidebarOverlay) {
+        sidebarOverlay.classList.remove('open');
+    }
 }
 
 // Handle login

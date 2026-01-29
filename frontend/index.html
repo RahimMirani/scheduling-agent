@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css?v=2.0">
 </head>
 <body>
     <div id="app">
@@ -66,6 +66,9 @@
                     </button>
 
                     <p class="login-footer">
+                        <svg viewBox="0 0 24 24" width="14" height="14" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                            <path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                        </svg>
                         Securely connect your Google account to get started
                     </p>
                 </div>
@@ -74,6 +77,9 @@
 
         <!-- Chat Screen -->
         <div id="chat-screen" class="screen hidden">
+            <!-- Sidebar Overlay (Mobile) -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            
             <!-- Sidebar -->
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-header">
@@ -225,6 +231,6 @@
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=2.0"></script>
 </body>
 </html>
