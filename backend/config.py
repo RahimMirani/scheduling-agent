@@ -14,11 +14,6 @@ class Settings(BaseSettings):
     # Gemini API
     gemini_api_key: str = ""
 
-    # App settings
-    app_host: str = "localhost"
-    app_port: int = 8000
-    app_secret_key: str = "change-this-in-production"
-
     # OAuth scopes for Gmail and Calendar
     google_scopes: list = [
         "https://www.googleapis.com/auth/gmail.modify",

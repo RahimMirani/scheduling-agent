@@ -419,9 +419,14 @@ async def reset_chat():
 
 
 if __name__ == "__main__":
+    from urllib.parse import urlparse
+    
+    url = os.getenv("APP_URL", "http://localhost:8000")
+    parsed = urlparse(url)
+    
     uvicorn.run(
         "main:app",
-        host=settings.app_host,
-        port=settings.app_port,
+        host=parsed.hostname or "localhost",
+        port=parsed.port or 8000,
         reload=True,
     )
