@@ -26,6 +26,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# -----------------------Frontend Routes Mounting Via Backend-----------------------
+
 # Mount static files for frontend
 frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
 if os.path.exists(frontend_dir):
