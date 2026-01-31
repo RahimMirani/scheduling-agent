@@ -1,5 +1,5 @@
-// API base URL - use localhost when opening file directly, empty when served by backend
-const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:8000' : '';
+// API base URL - loaded from config.js
+const API_BASE = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : '';
 
 // DOM Elements
 const loginScreen = document.getElementById('login-screen');

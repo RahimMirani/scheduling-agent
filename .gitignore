@@ -5,6 +5,7 @@ token.json
 
 # Environment
 .env
+frontend/config.js
 venv/
 env/
 .venv/
