@@ -7,6 +7,9 @@ from google.auth.transport.requests import Request
 
 from config import settings
 
+# Allow HTTP for local development (OAuth requires HTTPS by default)
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
 # Token storage path
 TOKEN_PATH = os.path.join(os.path.dirname(__file__), "token.json")
 
