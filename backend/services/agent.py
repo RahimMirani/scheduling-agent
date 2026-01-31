@@ -14,7 +14,7 @@ class SchedulingAgent:
     def __init__(self):
         genai.configure(api_key=settings.gemini_api_key)
         self.model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-3-flash-preview",
             tools=self._get_tools(),
             system_instruction=self._get_system_prompt(),
         )
