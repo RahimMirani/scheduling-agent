@@ -2,6 +2,7 @@ import json
 from datetime import datetime, timedelta
 from typing import Optional
 import google.generativeai as genai
+import agentbasis
 from agentbasis.llms.gemini import instrument
 
 from config import settings
@@ -431,6 +432,7 @@ Always use the available functions to fetch real data - never make up informatio
         """Start a new chat session."""
         self.chat = self.model.start_chat(enable_automatic_function_calling=False)
 
+    @agentbasis.trace
     def send_message(self, message: str) -> str:
         """
         Send a message to the agent and get a response.
