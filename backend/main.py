@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 import uvicorn
 import os
+import agentbasis
+agentbasis.init()
 
 from config import settings
 from auth import google_auth

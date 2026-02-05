@@ -19,5 +19,5 @@ pydantic-settings==2.6.0
 aiofiles==24.1.0
 python-multipart==0.0.12
 
-# Logging
-agentbasic==0.1.0
+# Observability
+agentbasis

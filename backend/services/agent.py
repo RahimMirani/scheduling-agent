@@ -2,10 +2,15 @@ import json
 from datetime import datetime, timedelta
 from typing import Optional
 import google.generativeai as genai
+import agentbasis
+from agentbasis.llms.gemini import instrument
 
 from config import settings
 from services.gmail import gmail_service
 from services.calendar import calendar_service
+
+# Instrument Gemini for automatic tracing of all LLM calls
+instrument()
 
 
 class SchedulingAgent:
@@ -297,8 +302,12 @@ Always use the available functions to fetch real data - never make up informatio
             }
         ]
 
+    @agentbasis.trace(name="execute_tool")
     def _execute_function(self, function_name: str, args: dict) -> dict:
         """Execute a function call and return the result."""
+        # Add tool name as span attribute for better filtering in dashboard
+        agentbasis.set_attribute("tool.name", function_name)
+        agentbasis.set_attribute("tool.args", json.dumps(args))
         try:
             if function_name == "get_emails":
                 max_results = args.get("max_results", 10)
@@ -427,6 +436,7 @@ Always use the available functions to fetch real data - never make up informatio
         """Start a new chat session."""
         self.chat = self.model.start_chat(enable_automatic_function_calling=False)
 
+    @agentbasis.trace(name="agent_chat")
     def send_message(self, message: str) -> str:
         """
         Send a message to the agent and get a response.
@@ -437,6 +447,9 @@ Always use the available functions to fetch real data - never make up informatio
         Returns:
             The agent's response
         """
+        # Track user message for session context
+        agentbasis.set_attribute("user.message", message[:500])  # Truncate for safety
+        
         if not self.chat:
             self.start_chat()
 
