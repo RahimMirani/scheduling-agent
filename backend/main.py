@@ -4,10 +4,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 import uvicorn
 import os
-import agentbasis
-agentbasis.init()
 
 from config import settings
+
+# Initialize AgentBasis observability with credentials
+import agentbasis
+agentbasis.init(
+    api_key=settings.agentbasis_api_key,
+    agent_id=settings.agentbasis_agent_id,
+)
 from auth import google_auth
 from services.gmail import gmail_service
 from services.calendar import calendar_service

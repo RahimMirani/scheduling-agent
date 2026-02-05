@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     # Gemini API
     gemini_api_key: str = ""
 
+    # AgentBasis Observability
+    agentbasis_api_key: str = ""
+    agentbasis_agent_id: str = ""
+
     # OAuth scopes for Gmail and Calendar
     google_scopes: list = [
         "https://www.googleapis.com/auth/gmail.modify",
